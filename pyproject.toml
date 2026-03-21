@@ -1,0 +1,47 @@
+[project]
+name = "backend-engineer-interview"
+version = "0.1.0"
+description = ""
+authors = [{ name = "Michael Kalish", email = "michael.kalish@focusconsulting.io" }]
+requires-python = ">=3.12"
+dependencies = [
+    "connexion[flask,swagger-ui,uvicorn]>=3.3",
+    "sqlalchemy>=2.0.48",
+    "pydantic>=2.12",
+]
+
+[project.optional-dependencies]
+dev = [
+    "alembic>=1.18",
+    "freezegun>=1.5",
+    "pytest>=8.4",
+    "ruff>=0.15",
+    "pyright>=1.1.400",
+]
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP"]
+
+[tool.pyright]
+pythonVersion = "3.12"
+typeCheckingMode = "standard"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+norecursedirs = ["tests/helpers"]
+filterwarnings = [
+    "ignore::DeprecationWarning:connexion.*",
+    "ignore::DeprecationWarning:sqlalchemy.*",
+]
+addopts = "--strict-markers"
+markers = [
+    "integration: mark a test as an integration test",
+    "dev_focus: Convenience marker to target tests during development",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

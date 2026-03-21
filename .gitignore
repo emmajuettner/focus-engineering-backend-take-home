@@ -1,0 +1,22 @@
+# Python compiled/optimized files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Python packaging stuff
+dist/
+*.egg-info
+
+# Python testing stuff
+.pytest_cache/
+
+# Python environments
+.env
+.venv
+
+# Type checking
+.mypy_cache
+.ruff_cache
+
+# Database
+test.db
