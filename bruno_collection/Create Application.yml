@@ -1,0 +1,23 @@
+info:
+  name: Create Application
+  type: http
+  seq: 4
+
+http:
+  method: POST
+  url: http://127.0.0.1:8000/v1/application
+  body:
+    type: json
+    data: |-
+      {
+        "leave_start_date" : "{{$isoTimestamp}}",
+        "leave_end_date" : "{{$isoTimestamp}}",
+        "id" : 1
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
