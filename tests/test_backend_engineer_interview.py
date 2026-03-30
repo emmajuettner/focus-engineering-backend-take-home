@@ -77,6 +77,21 @@ class TestPostApplication:
             application_response.json()["message"]
             == "leave_start_date is missing;leave_end_date is missing"
         )
+    
+    def test_post_application_404(self: Self, test_client: TestClient) -> None:
+        application_response = test_client.post(
+            "/v1/application",
+            json={
+                "leave_start_date": "2021-01-01",
+                "leave_end_date": "2021-02-01",
+                "employee_id": 123,
+            },
+        )
+        assert application_response.status_code == 404
+        assert (
+            application_response.json()["message"]
+            == "No such employee"
+        )
 
 
 def test_version() -> None:
