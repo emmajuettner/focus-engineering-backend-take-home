@@ -159,6 +159,22 @@ paths:
                                     employee_id:
                                         type: integer
                                         example: 1
+                                    employee:
+                                        type: object
+                                        properties:
+                                            id:
+                                                type: integer
+                                                example: 1
+                                            first_name:
+                                                type: string
+                                                example: George
+                                            last_name:
+                                                type: string
+                                                example: Harrison
+                                            date_of_birth:
+                                                type: string
+                                                format: date
+                                                example: '1943-02-25'
                 '404':
                     description: No such employee
                     content:
