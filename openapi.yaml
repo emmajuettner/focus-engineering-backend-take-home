@@ -113,3 +113,58 @@ paths:
                                     type: string
                                 last_name:
                                     type: string
+
+    /application:
+        post:
+            tags:
+                - Test Endpoints
+            summary: Create an application for a given employee
+            operationId: backend_engineer_interview.handlers.post_application
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                leave_start_date:
+                                    type: string
+                                    format: date
+                                    example: '2026-03-29'
+                                leave_end_date:
+                                    type: string
+                                    format: date
+                                    example: '2026-04-10'
+                                employee_id:
+                                    type: integer
+                                    example: 1
+            responses:
+                '201':
+                    description: Created the application
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    id:
+                                        type: integer
+                                        example: 1
+                                    leave_start_date:
+                                        type: string
+                                        format: date
+                                        example: '2026-03-29'
+                                    leave_end_date:
+                                        type: string
+                                        format: date
+                                        example: '2026-04-10'
+                                    employee_id:
+                                        type: integer
+                                        example: 1
+                '404':
+                    description: No such employee
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string

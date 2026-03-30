@@ -9,11 +9,26 @@ from flask import g
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 
-from backend_engineer_interview.models import Employee
+from backend_engineer_interview.models import Application, Employee
 
 
 class PydanticBaseModel(pydantic.BaseModel):
     model_config = {"from_attributes": True}
+
+
+def construct_error_message(e: pydantic.ValidationError) -> str:
+    error_messages = []
+    separator = ";"
+
+    for error in e.errors():
+        if error["type"] == "missing":
+            missing_field = error["loc"][-1]
+            error_messages.append(f"{missing_field} is missing")
+    
+    if len(error_messages) > 0:
+        return separator.join(error_messages)
+    
+    return ""
 
 
 @contextmanager
@@ -86,18 +101,49 @@ def patch_employee(id: int, body: dict) -> tuple[dict, int, dict]:
             return ({"message": "request not valid"}, 400, {})
 
 
-def post_application() -> None:
-    """
-    Accepts a leave_start_date, leave_end_date, employee_id and creates an Application
-    with those properties.  It should then return the new application with a status code of 200.
+class PostApplicationRequest(PydanticBaseModel):
+    leave_start_date: date
+    leave_end_date: date
+    employee_id: int
 
-    If any of the properties are missing in the request body, it should return the new application
-    with a status code of 400.
 
-    Verify the handler using the test cases in TestPostApplication.  Add any more tests you think
-    are necessary.
-    """
-    pass
+class ApplicationResponse(PydanticBaseModel):
+    model_config = {"from_attributes": True}
+
+    id: int
+    leave_start_date: date
+    leave_end_date: date
+    employee_id: int
+    employee: EmployeeResponse
+
+
+def post_application(body: dict) -> tuple[dict, int, dict]:
+    with db_session() as session:
+        try:
+            request_body = PostApplicationRequest.model_validate(body)
+
+            employee: Employee | None = session.query(Employee).filter(Employee.id == body["employee_id"]).one_or_none()
+            if not employee:
+                return ({"message": "No such employee"}, 404, {})
+
+            new_application = Application(
+                employee_id = employee.id,
+                leave_start_date = request_body.leave_start_date,
+                leave_end_date = request_body.leave_end_date,
+                employee = employee
+            )
+            
+            session.add(new_application)
+            session.flush()
+
+            return (ApplicationResponse.model_validate(new_application).model_dump(), 200, {})
+        except pydantic.ValidationError as e:
+            error_message = construct_error_message(e)
+
+            if error_message != "":
+                return ({"message": error_message}, 400, {})
+            
+            return ({"message": "request not valid"}, 400, {})
 
 
 def search_application() -> None:

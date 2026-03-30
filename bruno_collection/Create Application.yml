@@ -10,9 +10,9 @@ http:
     type: json
     data: |-
       {
-        "leave_start_date" : "{{$isoTimestamp}}",
-        "leave_end_date" : "{{$isoTimestamp}}",
-        "id" : 1
+        "leave_start_date" : "2026-03-05",
+        "leave_end_date" : "2026-03-07",
+        "employee_id" : 1
       }
   auth: inherit
 
