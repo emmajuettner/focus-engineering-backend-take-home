@@ -138,7 +138,7 @@ paths:
                                     type: integer
                                     example: 1
             responses:
-                '201':
+                '200':
                     description: Created the application
                     content:
                         application/json:
