@@ -87,7 +87,7 @@ class TestPostApplication:
                 "employee_id": 123,
             },
         )
-        assert application_response.status_code == 404
+        assert application_response.status_code == 400
         assert (
             application_response.json()["message"]
             == "No such employee"

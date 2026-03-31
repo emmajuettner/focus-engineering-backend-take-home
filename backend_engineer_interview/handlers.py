@@ -124,7 +124,7 @@ def post_application(body: dict) -> tuple[dict, int, dict]:
 
             employee: Employee | None = session.query(Employee).filter(Employee.id == body["employee_id"]).one_or_none()
             if not employee:
-                return ({"message": "No such employee"}, 404, {})
+                return ({"message": "No such employee"}, 400, {})
 
             new_application = Application(
                 employee_id = employee.id,
