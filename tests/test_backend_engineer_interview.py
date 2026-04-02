@@ -94,5 +94,36 @@ class TestPostApplication:
         )
 
 
+class TestGetApplication:
+    def test_get_application_valid_all_fields(self: Self, test_client: TestClient) -> None:
+        application_response = test_client.get(
+            "/v1/application",
+            params={
+                "first_name" : "John",
+                "last_name" : "Lennon",
+                "employee_id" : "1",
+                "page_size" : "10",
+                "page" : "1"
+            },
+        )
+        assert application_response.status_code == 200
+        application_results = application_response.json()
+        assert len(application_results["applications"]) == 2
+        assert application_results["pagination"]["page_size"] == 10
+        assert application_results["pagination"]["page"] == 1
+        #assert application_results["pagination"]["total_results"] is not None
+        #assert application_results["pagination"]["total_pages"] is not None
+        #assert application_results["pagination"]["has_next"] is not None
+        #assert application_results["pagination"]["has_prev"] is not None
+
+"""
+TODO - test cases to add
+no results
+too big page size
+too big page number
+invalid page size
+invalid page number
+"""
+
 def test_version() -> None:
     assert __version__ == "0.1.0"

@@ -184,3 +184,74 @@ paths:
                                 properties:
                                     message:
                                         type: string
+        get:
+            tags:
+                - Test Endpoints
+            summary: Search for applications
+            operationId: backend_engineer_interview.handlers.search_application
+            parameters:
+                - name: employee_id
+                  in: query
+                  schema:
+                    type: integer
+                  description: the employee id
+                  required: false
+                - name: first_name
+                  in: query
+                  schema:
+                    type: string
+                  description: the employee's first name
+                  required: false
+                - name: last_name
+                  in: query
+                  schema:
+                    type: string
+                  description: the employee's last name
+                  required: false
+                - name: page
+                  in: query
+                  schema:
+                    type: integer
+                    default: 1
+                    minimum: 1
+                  description: the page number to be retrieved
+                  required: false
+                - name: page_size
+                  in: query
+                  schema:
+                    type: integer
+                    default: 100
+                    minimum: 1
+                    maximum: 500
+                  description: the number of results per page
+                  required: false
+            responses:
+                '200':
+                    description: Found the employee
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    id:
+                                        type: integer
+                                        example: 1
+                                    first_name:
+                                        type: string
+                                        example: George
+                                    last_name:
+                                        type: string
+                                        example: Harrison
+                                    date_of_birth:
+                                        type: string
+                                        format: date
+                                        example: '1943-02-25'
+                '404':
+                    description: No such employee
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string

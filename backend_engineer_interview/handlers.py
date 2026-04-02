@@ -1,6 +1,9 @@
 from collections.abc import Generator
 from contextlib import contextmanager
 from datetime import date
+import json
+from pickle import APPEND
+from typing import Any, List
 
 import connexion  # type: ignore
 import connexion.lifecycle  # type: ignore
@@ -146,10 +149,31 @@ def post_application(body: dict) -> tuple[dict, int, dict]:
             return ({"message": "request not valid"}, 400, {})
 
 
-def search_application() -> None:
-    """
-    Returns a list of applications.  Can provide an employee id, first name or last name
-    to filter the results
-    """
-
-    pass
+def search_application(
+                        page: int = 1,
+                        page_size: int = 100,
+                        employee_id: str = "", 
+                        first_name: str = "", 
+                        last_name: str = "",
+                       ) -> tuple[dict, int, dict]:
+    with db_session() as session:
+        try:
+            filters = []
+            query = session.query(Application).join(Application.employee)
+            if employee_id != "":
+                query = query.filter(Employee.id == employee_id)
+            if first_name != "":
+                query = query.filter(Employee.first_name == first_name)
+            if last_name != "":
+                query = query.filter(Employee.last_name == last_name)
+            
+            print(query)
+            applications: List[Application] | None = query.order_by(Application.employee_id).order_by(Application.id).limit(page_size).offset(page-1).all()
+            
+            applicationsResponse: List[dict[str, Any]] | None = [ApplicationResponse.model_validate(application).model_dump(mode="json") for application in applications]
+            
+            return ({"applications" : applicationsResponse,
+                     "pagination" : {"page" : page,
+                                     "page_size" : page_size}}, 200, {})
+        except pydantic.ValidationError as e:
+            return ({"message": "request not valid"}, 400, {})
