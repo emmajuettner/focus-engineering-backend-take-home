@@ -1,9 +1,7 @@
 from collections.abc import Generator
 from contextlib import contextmanager
 from datetime import date
-import json
 from math import ceil
-from pickle import APPEND
 from typing import Any, List
 
 import connexion  # type: ignore
