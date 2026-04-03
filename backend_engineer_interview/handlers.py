@@ -157,7 +157,6 @@ def search_application(
                        ) -> tuple[dict, int, dict]:
     with db_session() as session:
         try:
-            filters = []
             query = session.query(Application).join(Application.employee)
             if employee_id != "":
                 query = query.filter(Employee.id == employee_id)

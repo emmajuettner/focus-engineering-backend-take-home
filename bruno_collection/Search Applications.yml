@@ -5,11 +5,12 @@ info:
 
 http:
   method: GET
-  url: http://127.0.0.1:8000/v1/application?first_name=John&page_size=10
+  url: http://127.0.0.1:8000/v1/application
   params:
     - name: first_name
       value: John
       type: query
+      disabled: true
     - name: last_name
       value: Lennon
       type: query
@@ -19,10 +20,11 @@ http:
       type: query
       disabled: true
     - name: page_size
-      value: "10"
+      value: "2"
       type: query
+      disabled: true
     - name: page
-      value: "1"
+      value: "2"
       type: query
       disabled: true
   auth: inherit
