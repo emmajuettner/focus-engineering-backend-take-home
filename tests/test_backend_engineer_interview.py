@@ -111,18 +111,19 @@ class TestGetApplication:
         assert len(application_results["applications"]) == 2
         assert application_results["pagination"]["page_size"] == 10
         assert application_results["pagination"]["page"] == 1
-        #assert application_results["pagination"]["total_results"] is not None
-        #assert application_results["pagination"]["total_pages"] is not None
-        #assert application_results["pagination"]["has_next"] is not None
-        #assert application_results["pagination"]["has_prev"] is not None
+        assert application_results["pagination"]["total_results"] == 2
+        assert application_results["pagination"]["total_pages"] == 1
+        assert application_results["pagination"]["has_next"] == False
+        assert application_results["pagination"]["has_prev"] == False
 
 """
-TODO - test cases to add
+TODO - more test cases to add
 no results
 too big page size
 too big page number
 invalid page size
 invalid page number
+invalid search criteria
 """
 
 def test_version() -> None:

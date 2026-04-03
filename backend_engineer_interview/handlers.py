@@ -2,6 +2,7 @@ from collections.abc import Generator
 from contextlib import contextmanager
 from datetime import date
 import json
+from math import ceil
 from pickle import APPEND
 from typing import Any, List
 
@@ -167,13 +168,21 @@ def search_application(
             if last_name != "":
                 query = query.filter(Employee.last_name == last_name)
             
-            print(query)
-            applications: List[Application] | None = query.order_by(Application.employee_id).order_by(Application.id).limit(page_size).offset(page-1).all()
-            
+            query = query.order_by(Application.id)
+            num_applications: int = query.count()
+            num_pages: int = ceil(num_applications / page_size)
+            has_next: bool = page < num_pages
+            has_prev: bool = page > 1
+            applications: List[Application] | None = query.limit(page_size).offset((page-1)*page_size).all()
+
             applicationsResponse: List[dict[str, Any]] | None = [ApplicationResponse.model_validate(application).model_dump(mode="json") for application in applications]
             
             return ({"applications" : applicationsResponse,
                      "pagination" : {"page" : page,
-                                     "page_size" : page_size}}, 200, {})
+                                     "page_size" : page_size,
+                                     "total_results" : num_applications,
+                                     "total_pages" : num_pages,
+                                     "has_next" : has_next,
+                                     "has_prev" : has_prev}}, 200, {})
         except pydantic.ValidationError as e:
             return ({"message": "request not valid"}, 400, {})
