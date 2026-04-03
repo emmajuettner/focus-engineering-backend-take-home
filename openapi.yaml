@@ -227,27 +227,70 @@ paths:
                   required: false
             responses:
                 '200':
-                    description: Found the employee
+                    description: Returns applications matching the specified criteria
                     content:
                         application/json:
                             schema:
                                 type: object
                                 properties:
-                                    id:
-                                        type: integer
-                                        example: 1
-                                    first_name:
-                                        type: string
-                                        example: George
-                                    last_name:
-                                        type: string
-                                        example: Harrison
-                                    date_of_birth:
-                                        type: string
-                                        format: date
-                                        example: '1943-02-25'
+                                    applications:
+                                        type: array
+                                        items:
+                                            type: object
+                                            properties:
+                                                id:
+                                                    type: integer
+                                                    example: 1
+                                                leave_start_date:
+                                                    type: string
+                                                    format: date
+                                                    example: '2026-03-29'
+                                                leave_end_date:
+                                                    type: string
+                                                    format: date
+                                                    example: '2026-04-10'
+                                                employee_id:
+                                                    type: integer
+                                                    example: 1
+                                                employee:
+                                                    type: object
+                                                    properties:
+                                                        id:
+                                                            type: integer
+                                                            example: 1
+                                                        first_name:
+                                                            type: string
+                                                            example: George
+                                                        last_name:
+                                                            type: string
+                                                            example: Harrison
+                                                        date_of_birth:
+                                                            type: string
+                                                            format: date
+                                                            example: '1943-02-25'
+                                    pagination:
+                                        type: object
+                                        properties:
+                                            page:
+                                                type: integer
+                                                example: 1
+                                            page_size:
+                                                type: integer
+                                                example: 100
+                                            total_pages:
+                                                type: integer
+                                                example: 5
+                                            total_results:
+                                                type: integer
+                                                example: 500
+                                            has_prev:
+                                                type: boolean
+                                                example: False
+                                            has_next:
+                                                type: boolean
+                                                example: False
                 '404':
-                    description: No such employee
+                    description: Invalid request parameters
                     content:
                         application/json:
                             schema:
