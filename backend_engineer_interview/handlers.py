@@ -1,6 +1,8 @@
 from collections.abc import Generator
 from contextlib import contextmanager
 from datetime import date
+from math import ceil
+from typing import Any, List
 
 import connexion  # type: ignore
 import connexion.lifecycle  # type: ignore
@@ -146,10 +148,38 @@ def post_application(body: dict) -> tuple[dict, int, dict]:
             return ({"message": "request not valid"}, 400, {})
 
 
-def search_application() -> None:
-    """
-    Returns a list of applications.  Can provide an employee id, first name or last name
-    to filter the results
-    """
+def search_application(
+                        page: int = 1,
+                        page_size: int = 100,
+                        employee_id: str = "", 
+                        first_name: str = "", 
+                        last_name: str = "",
+                       ) -> tuple[dict, int, dict]:
+    with db_session() as session:
+        try:
+            query = session.query(Application).join(Application.employee)
+            if employee_id != "":
+                query = query.filter(Employee.id == employee_id)
+            if first_name != "":
+                query = query.filter(Employee.first_name == first_name)
+            if last_name != "":
+                query = query.filter(Employee.last_name == last_name)
+            
+            query = query.order_by(Application.id)
+            num_applications: int = query.count()
+            num_pages: int = ceil(num_applications / page_size)
+            has_next: bool = page < num_pages
+            has_prev: bool = page > 1
+            applications: List[Application] | None = query.limit(page_size).offset((page-1)*page_size).all()
 
-    pass
+            applicationsResponse: List[dict[str, Any]] | None = [ApplicationResponse.model_validate(application).model_dump(mode="json") for application in applications]
+            
+            return ({"applications" : applicationsResponse,
+                     "pagination" : {"page" : page,
+                                     "page_size" : page_size,
+                                     "total_results" : num_applications,
+                                     "total_pages" : num_pages,
+                                     "has_next" : has_next,
+                                     "has_prev" : has_prev}}, 200, {})
+        except pydantic.ValidationError as e:
+            return ({"message": "request not valid"}, 400, {})

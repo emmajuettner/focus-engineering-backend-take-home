@@ -184,3 +184,117 @@ paths:
                                 properties:
                                     message:
                                         type: string
+        get:
+            tags:
+                - Test Endpoints
+            summary: Search for applications
+            operationId: backend_engineer_interview.handlers.search_application
+            parameters:
+                - name: employee_id
+                  in: query
+                  schema:
+                    type: integer
+                  description: the employee id
+                  required: false
+                - name: first_name
+                  in: query
+                  schema:
+                    type: string
+                  description: the employee's first name
+                  required: false
+                - name: last_name
+                  in: query
+                  schema:
+                    type: string
+                  description: the employee's last name
+                  required: false
+                - name: page
+                  in: query
+                  schema:
+                    type: integer
+                    default: 1
+                    minimum: 1
+                  description: the page number to be retrieved
+                  required: false
+                - name: page_size
+                  in: query
+                  schema:
+                    type: integer
+                    default: 100
+                    minimum: 1
+                    maximum: 500
+                  description: the number of results per page
+                  required: false
+            responses:
+                '200':
+                    description: Returns applications matching the specified criteria
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    applications:
+                                        type: array
+                                        items:
+                                            type: object
+                                            properties:
+                                                id:
+                                                    type: integer
+                                                    example: 1
+                                                leave_start_date:
+                                                    type: string
+                                                    format: date
+                                                    example: '2026-03-29'
+                                                leave_end_date:
+                                                    type: string
+                                                    format: date
+                                                    example: '2026-04-10'
+                                                employee_id:
+                                                    type: integer
+                                                    example: 1
+                                                employee:
+                                                    type: object
+                                                    properties:
+                                                        id:
+                                                            type: integer
+                                                            example: 1
+                                                        first_name:
+                                                            type: string
+                                                            example: George
+                                                        last_name:
+                                                            type: string
+                                                            example: Harrison
+                                                        date_of_birth:
+                                                            type: string
+                                                            format: date
+                                                            example: '1943-02-25'
+                                    pagination:
+                                        type: object
+                                        properties:
+                                            page:
+                                                type: integer
+                                                example: 1
+                                            page_size:
+                                                type: integer
+                                                example: 100
+                                            total_pages:
+                                                type: integer
+                                                example: 5
+                                            total_results:
+                                                type: integer
+                                                example: 500
+                                            has_prev:
+                                                type: boolean
+                                                example: False
+                                            has_next:
+                                                type: boolean
+                                                example: False
+                '404':
+                    description: Invalid request parameters
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
